@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 namespace QuantityMeasurementAPI.Controller;
 
-[Route("api/quantity")]
+[Route("quantity")]
 [ApiController]
 public class QuantityMeasurementController : ControllerBase
 {
