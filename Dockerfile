@@ -5,21 +5,19 @@ WORKDIR /app
 # Copy the solution file
 COPY *.slnx ./
 
-# Copy each project file (.csproj) to its respective folder to restore dependencies
-# This allows Docker to cache your layers for faster builds
+# Copy the actual project files based on your screenshot
 COPY QuantityMeasurementAPI/*.csproj ./QuantityMeasurementAPI/
-COPY QuantityMeasurementApp/*.csproj ./QuantityMeasurementApp/
-COPY QuantityMeasurementApp.Tests/*.csproj ./QuantityMeasurementApp.Tests/
 COPY QuantityMeasurementAppBusinessLayer/*.csproj ./QuantityMeasurementAppBusinessLayer/
-COPY QuantityMeasurementAppConsole/*.csproj ./QuantityMeasurementAppConsole/
 COPY QuantityMeasurementAppModelLayer/*.csproj ./QuantityMeasurementAppModelLayer/
 COPY QuantityMeasurementAppRepoLayer/*.csproj ./QuantityMeasurementAppRepoLayer/
 
 # Restore dependencies
 RUN dotnet restore "QuantityMeasurementAPI/QuantityMeasurementAPI.csproj"
 
-# Copy everything else and publish the API
+# Copy the rest of the source code
 COPY . .
+
+# Publish the API
 RUN dotnet publish "QuantityMeasurementAPI/QuantityMeasurementAPI.csproj" -c Release -o /out
 
 # 2. Runtime Stage
@@ -27,7 +25,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /out .
 
-# Expose port 8080 (the default we set in Program.cs)
+# Render dynamic port handling
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
