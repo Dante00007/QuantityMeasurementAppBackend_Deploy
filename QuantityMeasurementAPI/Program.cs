@@ -56,7 +56,7 @@ builder.Services.AddAuthentication(options =>
 
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? ""))
     };
 });
 
@@ -65,12 +65,13 @@ builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 builder.Services.AddCors(options =>
 {
-   options.AddPolicy("AllowAngularApp", policy =>
-    {
-        policy.WithOrigins("https://quantity-measurement-web.onrender.com/") 
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
+    options.AddPolicy("AllowAngularApp", policy =>
+     {
+         policy.WithOrigins("https://quantity-measurement-web.onrender.com")
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+     });
 });
 
 // builder.Services.AddOpenApi();
